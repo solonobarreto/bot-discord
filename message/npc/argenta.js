@@ -156,7 +156,7 @@ client.on('messageCreate', async (message) => {
 // Atribuir cargo ao reagir (com logs de debug)
 client.on('messageReactionAdd', async (reaction, user) => {
     console.log(`Reação detectada: ${reaction.emoji.name || reaction.emoji.id} por ${user.tag}`);
-    console.log(`ReactionMessageId atual: ${reactionMessageId}, Message ID: ${reaction.message.id}`);
+    console.log(`Render: Reação em mensagem ${reaction.message.id}, esperada ${reactionMessageId}`);
     if (user.bot) return;
     if (reaction.message.id !== reactionMessageId) {
         console.log('Mensagem não corresponde');
@@ -211,5 +211,4 @@ client.on('messageReactionRemove', async (reaction, user) => {
     }
 });
 
-console.log(`Render: Reação em mensagem ${reaction.message.id}, esperada ${reactionMessageId}`);
 client.login(process.env.TOKEN_ARGENTA);
