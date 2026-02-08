@@ -1,0 +1,47 @@
+[
+  {
+    "messageId": "1469933736190541836",
+    "group": "Warrior",
+    "channelId": "1469838898804035689"
+  },
+  {
+    "messageId": "1469933737666940929",
+    "group": "Archer",
+    "channelId": "1469838898804035689"
+  },
+  {
+    "messageId": "1469933739382669343",
+    "group": "Sorcerss",
+    "channelId": "1469838898804035689"
+  },
+  {
+    "messageId": "1469933740959731884",
+    "group": "Cleric",
+    "channelId": "1469838898804035689"
+  },
+  {
+    "messageId": "1469933742305837301",
+    "group": "Academic",
+    "channelId": "1469838898804035689"
+  },
+  {
+    "messageId": "1469933743937683586",
+    "group": "Kali",
+    "channelId": "1469838898804035689"
+  },
+  {
+    "messageId": "1469933763713831013",
+    "group": "Assassin",
+    "channelId": "1469838898804035689"
+  },
+  {
+    "messageId": "1469933765248815297",
+    "group": "Lancea",
+    "channelId": "1469838898804035689"
+  },
+  {
+    "messageId": "1469933766737657887",
+    "group": "Machina",
+    "channelId": "1469838898804035689"
+  }
+]
