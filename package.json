@@ -1,0 +1,19 @@
+{
+  "name": "discordbot",
+  "version": "1.0.0",
+  "description": "Coleção de Bots Discord para Roles",
+  "main": "index.js",
+  "scripts": {
+    "start:argenta": "node message/npc/argenta.js",
+    "start:nerwin": "node message/npc/nerwin.js",
+    "start:irine": "node message/npc/irine.js",
+    "start": "npm run start:argenta"
+  },
+  "dependencies": {
+    "discord.js": "^14.14.1",
+    "express": "^4.18.0"
+  },
+  "engines": {
+    "node": "18.x"
+  }
+}
