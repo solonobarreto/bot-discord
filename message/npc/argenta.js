@@ -153,61 +153,107 @@ client.on('messageCreate', async (message) => {
     }
 });
 
-// Atribuir cargo ao reagir (com logs de debug)
+// Atribuir cargo ao reagir (com logs detalhados)
 client.on('messageReactionAdd', async (reaction, user) => {
-    console.log(`Reação detectada: ${reaction.emoji.name || reaction.emoji.id} por ${user.tag}`);
-    console.log(`Render: Reação em mensagem ${reaction.message.id}, esperada ${reactionMessageId}`);
-    if (user.bot) return;
+    console.log(`[Argenta] Evento messageReactionAdd disparado para usuário: ${user.tag}`);
+    console.log(`[Argenta] Emoji reagido: ${reaction.emoji.name || reaction.emoji.id}`);
+    console.log(`[Argenta] ID da mensagem reagida: ${reaction.message.id}`);
+    console.log(`[Argenta] ReactionMessageId esperado: ${reactionMessageId}`);
+    
+    if (user.bot) {
+        console.log(`[Argenta] Usuário é bot, ignorando.`);
+        return;
+    }
+    
     if (reaction.message.id !== reactionMessageId) {
-        console.log('Mensagem não corresponde');
+        console.log(`[Argenta] Mensagem não corresponde à esperada, ignorando.`);
         return;
     }
-
-    const emojiId = reaction.emoji.id || reaction.emoji.name;  // ID para customizados, name para Unicode
-    console.log(`Emoji ID detectado: ${emojiId}`);
+    
+    console.log(`[Argenta] Mensagem validada, processando reação.`);
+    
+    const emojiId = reaction.emoji.id || reaction.emoji.name;
+    console.log(`[Argenta] Emoji ID detectado: ${emojiId}`);
+    
     const roleId = roleMap[emojiId];
-    console.log(`Role ID mapeado: ${roleId}`);
+    console.log(`[Argenta] Role ID mapeado: ${roleId}`);
+    
     if (!roleId) {
-        console.log('Role ID vazio, pulando');
+        console.log(`[Argenta] Role ID vazio ou não mapeado, pulando.`);
         return;
     }
-
+    
     const guild = reaction.message.guild;
+    console.log(`[Argenta] Guild ID: ${guild.id}`);
+    
     const member = await guild.members.fetch(user.id);
+    console.log(`[Argenta] Membro encontrado: ${member.user.tag}`);
+    
     const role = guild.roles.cache.get(roleId);
     if (!role) {
-        console.log('Cargo não encontrado');
+        console.log(`[Argenta] Cargo não encontrado no cache do guild.`);
         return;
     }
-
+    
+    console.log(`[Argenta] Tentando atribuir cargo: ${role.name}`);
+    
     try {
         await member.roles.add(role);
-        console.log(`Cargo ${role.name} atribuído a ${user.tag}`);
+        console.log(`[Argenta] Cargo ${role.name} atribuído com sucesso a ${user.tag}`);
     } catch (error) {
-        console.error(`Erro ao atribuir cargo: ${error.message}`);
+        console.error(`[Argenta] Erro ao atribuir cargo: ${error.message}`);
     }
 });
 
 // Remover cargo ao remover reação
 client.on('messageReactionRemove', async (reaction, user) => {
-    console.log(`Reação removida: ${reaction.emoji.name || reaction.emoji.id} por ${user.tag}`);
-    if (user.bot) return;
-    if (reaction.message.id !== reactionMessageId) return;
-
+    console.log(`[Argenta] Evento messageReactionRemove disparado para usuário: ${user.tag}`);
+    console.log(`[Argenta] Emoji removido: ${reaction.emoji.name || reaction.emoji.id}`);
+    console.log(`[Argenta] ID da mensagem reagida: ${reaction.message.id}`);
+    console.log(`[Argenta] ReactionMessageId esperado: ${reactionMessageId}`);
+    
+    if (user.bot) {
+        console.log(`[Argenta] Usuário é bot, ignorando.`);
+        return;
+    }
+    
+    if (reaction.message.id !== reactionMessageId) {
+        console.log(`[Argenta] Mensagem não corresponde à esperada, ignorando.`);
+        return;
+    }
+    
+    console.log(`[Argenta] Mensagem validada, processando remoção de reação.`);
+    
     const emojiId = reaction.emoji.id || reaction.emoji.name;
+    console.log(`[Argenta] Emoji ID detectado: ${emojiId}`);
+    
     const roleId = roleMap[emojiId];
-    if (!roleId) return;
-
+    console.log(`[Argenta] Role ID mapeado: ${roleId}`);
+    
+    if (!roleId) {
+        console.log(`[Argenta] Role ID vazio ou não mapeado, pulando.`);
+        return;
+    }
+    
     const guild = reaction.message.guild;
+    console.log(`[Argenta] Guild ID: ${guild.id}`);
+    
     const member = await guild.members.fetch(user.id);
+    console.log(`[Argenta] Membro encontrado: ${member.user.tag}`);
+    
     const role = guild.roles.cache.get(roleId);
-    if (!role) return;
-
+    if (!role) {
+        console.log(`[Argenta] Cargo não encontrado no cache do guild.`);
+        return;
+    }
+    
+    console.log(`[Argenta] Tentando remover cargo: ${role.name}`);
+    
     try {
         await member.roles.remove(role);
-        console.log(`Cargo ${role.name} removido de ${user.tag}`);
+        console.log(`[Argenta] Cargo ${role.name} removido com sucesso de ${user.tag}`);
     } catch (error) {
-        console.error(`Erro: ${error.message}`);
+        console.error(`[Argenta] Erro ao remover cargo: ${error.message}`);
     }
 });
 

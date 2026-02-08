@@ -234,61 +234,107 @@ client.on('messageCreate', async (message) => {
     }
 });
 
-// Atribuir cargo ao reagir
+// Atribuir cargo ao reagir (com logs detalhados)
 client.on('messageReactionAdd', async (reaction, user) => {
-    console.log(`Reação detectada: ${reaction.emoji.name || reaction.emoji.id} por ${user.tag}`);
-    console.log(`Message ID: ${reaction.message.id}, ReactionMessageIds: ${reactionMessageIds.join(', ')}`);
-    if (user.bot) return;
+    console.log(`[Nerwin] Evento messageReactionAdd disparado para usuário: ${user.tag}`);
+    console.log(`[Nerwin] Emoji reagido: ${reaction.emoji.name || reaction.emoji.id}`);
+    console.log(`[Nerwin] ID da mensagem reagida: ${reaction.message.id}`);
+    console.log(`[Nerwin] ReactionMessageIds esperados: ${reactionMessageIds.join(', ')}`);
+    
+    if (user.bot) {
+        console.log(`[Nerwin] Usuário é bot, ignorando.`);
+        return;
+    }
+    
     if (!reactionMessageIds.includes(reaction.message.id)) {
-        console.log('Mensagem não corresponde');
+        console.log(`[Nerwin] Mensagem não corresponde às esperadas, ignorando.`);
         return;
     }
-
+    
+    console.log(`[Nerwin] Mensagem validada, processando reação.`);
+    
     const emojiId = reaction.emoji.id || reaction.emoji.name;
-    console.log(`Emoji ID detectado: ${emojiId}`);
+    console.log(`[Nerwin] Emoji ID detectado: ${emojiId}`);
+    
     const roleId = roleMap[emojiId];
-    console.log(`Role ID mapeado: ${roleId}`);
+    console.log(`[Nerwin] Role ID mapeado: ${roleId}`);
+    
     if (!roleId) {
-        console.log('Role ID vazio, pulando');
+        console.log(`[Nerwin] Role ID vazio ou não mapeado, pulando.`);
         return;
     }
-
+    
     const guild = reaction.message.guild;
+    console.log(`[Nerwin] Guild ID: ${guild.id}`);
+    
     const member = await guild.members.fetch(user.id);
+    console.log(`[Nerwin] Membro encontrado: ${member.user.tag}`);
+    
     const role = guild.roles.cache.get(roleId);
     if (!role) {
-        console.log('Cargo não encontrado');
+        console.log(`[Nerwin] Cargo não encontrado no cache do guild.`);
         return;
     }
-
+    
+    console.log(`[Nerwin] Tentando atribuir cargo: ${role.name}`);
+    
     try {
         await member.roles.add(role);
-        console.log(`Cargo ${role.name} atribuído a ${user.tag}`);
+        console.log(`[Nerwin] Cargo ${role.name} atribuído com sucesso a ${user.tag}`);
     } catch (error) {
-        console.error(`Erro ao atribuir cargo: ${error.message}`);
+        console.error(`[Nerwin] Erro ao atribuir cargo: ${error.message}`);
     }
 });
 
 // Remover cargo ao remover reação
 client.on('messageReactionRemove', async (reaction, user) => {
-    console.log(`Reação removida: ${reaction.emoji.name || reaction.emoji.id} por ${user.tag}`);
-    if (user.bot) return;
-    if (!reactionMessageIds.includes(reaction.message.id)) return;
-
+    console.log(`[Nerwin] Evento messageReactionRemove disparado para usuário: ${user.tag}`);
+    console.log(`[Nerwin] Emoji removido: ${reaction.emoji.name || reaction.emoji.id}`);
+    console.log(`[Nerwin] ID da mensagem reagida: ${reaction.message.id}`);
+    console.log(`[Nerwin] ReactionMessageIds esperados: ${reactionMessageIds.join(', ')}`);
+    
+    if (user.bot) {
+        console.log(`[Nerwin] Usuário é bot, ignorando.`);
+        return;
+    }
+    
+    if (!reactionMessageIds.includes(reaction.message.id)) {
+        console.log(`[Nerwin] Mensagem não corresponde às esperadas, ignorando.`);
+        return;
+    }
+    
+    console.log(`[Nerwin] Mensagem validada, processando remoção de reação.`);
+    
     const emojiId = reaction.emoji.id || reaction.emoji.name;
+    console.log(`[Nerwin] Emoji ID detectado: ${emojiId}`);
+    
     const roleId = roleMap[emojiId];
-    if (!roleId) return;
-
+    console.log(`[Nerwin] Role ID mapeado: ${roleId}`);
+    
+    if (!roleId) {
+        console.log(`[Nerwin] Role ID vazio ou não mapeado, pulando.`);
+        return;
+    }
+    
     const guild = reaction.message.guild;
+    console.log(`[Nerwin] Guild ID: ${guild.id}`);
+    
     const member = await guild.members.fetch(user.id);
+    console.log(`[Nerwin] Membro encontrado: ${member.user.tag}`);
+    
     const role = guild.roles.cache.get(roleId);
-    if (!role) return;
-
+    if (!role) {
+        console.log(`[Nerwin] Cargo não encontrado no cache do guild.`);
+        return;
+    }
+    
+    console.log(`[Nerwin] Tentando remover cargo: ${role.name}`);
+    
     try {
         await member.roles.remove(role);
-        console.log(`Cargo ${role.name} removido de ${user.tag}`);
+        console.log(`[Nerwin] Cargo ${role.name} removido com sucesso de ${user.tag}`);
     } catch (error) {
-        console.error(`Erro: ${error.message}`);
+        console.error(`[Nerwin] Erro ao remover cargo: ${error.message}`);
     }
 });
 
