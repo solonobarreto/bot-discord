@@ -16,6 +16,7 @@ const client = new Client({
 const dataFile = path.join(__dirname, '../data/', 'nerwinMessageData.json');  // Caminho corrigido para data/
 
 // Mapa de emojis para IDs de cargos (chaves: IDs de emojis, valores: IDs de cargos)
+// Este é o roleMap das reações – mapeia cada emoji a um cargo
 const roleMap = {
     // emoji_id : cargo_id
     '1424611100842004490': '1469894337490845718',  // moonlord
@@ -112,7 +113,7 @@ function loadData() {
             return parsed;  // Formato novo
         } else {
             // Formato antigo (objeto): migra para array vazia
-            console.log('Formato antigo detectado. Migrando para array vazia.');
+            console.log('[Nerwin] Formato antigo detectado. Migrando para array vazia.');
             return [];
         }
     }
@@ -127,7 +128,6 @@ function saveData(data) {
 // Cria as mensagens de reações (uma por grupo)
 async function createReactionMessages(channel) {
     const messagesData = [];
-
     for (const [groupName, emojis] of Object.entries(groups)) {
         const embed = {
             title: `My name is Nerwin.`,
@@ -143,21 +143,13 @@ async function createReactionMessages(channel) {
             ],
             footer: { text: 'React to assign/remove your class role.' },
         };
-
         const sentMessage = await channel.send({ embeds: [embed] });
-
-        // Removido: Não adiciona reações automaticamente
-        // Os usuários reagirão manualmente com os emojis listados
-
         messagesData.push({ messageId: sentMessage.id, group: groupName, channelId: channel.id });
-        console.log(`Mensagem para ${groupName} criada: ID ${sentMessage.id}`);
+        console.log(`[Nerwin] Mensagem para ${groupName} criada: ID ${sentMessage.id}`);
     }
-
-    // Salva todas as mensagens
     saveData(messagesData);
-    // Atualiza a lista global de messageIds
     reactionMessageIds = getReactionMessageIds();
-    console.log('Todas as mensagens salvas e lista atualizada.');
+    console.log('[Nerwin] Todas as mensagens salvas.');
 }
 
 // Deleta todas as mensagens de reações
@@ -166,27 +158,23 @@ async function deleteReactionMessages() {
     if (messagesData.length === 0) {
         throw new Error('Nenhuma mensagem de reações encontrada para deletar.');
     }
-
     for (const { messageId, group, channelId } of messagesData) {
         try {
             const channel = client.channels.cache.get(channelId);
             if (!channel) {
-                console.error(`Canal ${channelId} não encontrado para ${group}.`);
+                console.error(`[Nerwin] Canal ${channelId} não encontrado para ${group}.`);
                 continue;
             }
             const message = await channel.messages.fetch(messageId);
             if (message) {
                 await message.delete();
-                console.log(`Mensagem de ${group} deletada: ID ${messageId}`);
+                console.log(`[Nerwin] Mensagem de ${group} deletada: ID ${messageId}`);
             }
         } catch (error) {
-            console.error(`Erro ao deletar mensagem ${messageId}: ${error.message}`);
+            console.error(`[Nerwin] Erro ao deletar mensagem ${messageId}: ${error.message}`);
         }
     }
-
-    // Limpa dados
     saveData([]);
-    // Atualiza a lista global de messageIds
     reactionMessageIds = [];
 }
 
@@ -197,7 +185,7 @@ function getReactionMessageIds() {
 }
 
 let reactionMessageIds = getReactionMessageIds();  // Carrega do arquivo JSON
-console.log(`ReactionMessageIds carregados: ${reactionMessageIds.join(', ')}`);
+console.log(`[Nerwin] ReactionMessageIds carregados: ${reactionMessageIds.join(', ')}`);
 
 client.once('ready', () => {
     console.log(`Bot Nerwin ${client.user.tag} está online!`);
