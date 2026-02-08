@@ -211,4 +211,5 @@ client.on('messageReactionRemove', async (reaction, user) => {
     }
 });
 
+console.log(`Render: Reação em mensagem ${reaction.message.id}, esperada ${reactionMessageId}`);
 client.login(process.env.TOKEN_ARGENTA);
