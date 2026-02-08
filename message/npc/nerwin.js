@@ -292,7 +292,4 @@ client.on('messageReactionRemove', async (reaction, user) => {
     }
 });
 
-// Inicia o servidor HTTP
-startServer();
-
 client.login(process.env.TOKEN_NERWIN);
