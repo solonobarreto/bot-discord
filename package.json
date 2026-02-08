@@ -4,14 +4,15 @@
   "description": "Coleção de Bots Discord para Roles",
   "main": "index.js",
   "scripts": {
+    "start": "node index.js", 
     "start:argenta": "node message/npc/argenta.js",
     "start:nerwin": "node message/npc/nerwin.js",
-    "start:irine": "node message/npc/irine.js",
-    "start": "npm run start:argenta"
+    "start:irine": "node message/npc/irine.js"
   },
   "dependencies": {
     "discord.js": "^14.14.1",
-    "express": "^4.18.0"
+    "express": "^4.18.0",
+    "dotenv": "^16.4.5"
   },
   "engines": {
     "node": "18.x"

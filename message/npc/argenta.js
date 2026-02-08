@@ -1,7 +1,7 @@
 const { Client, GatewayIntentBits } = require('discord.js');
 const fs = require('fs');
 const path = require('path');
-const { startServer } = require('../server.js');
+require('dotenv').config();  // Adicionado para carregar o .env localmente
 
 const client = new Client({
     intents: [
