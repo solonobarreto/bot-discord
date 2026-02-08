@@ -1,6 +1,7 @@
 const { Client, GatewayIntentBits } = require('discord.js');
 const fs = require('fs');
 const path = require('path');
+const { startServer } = require('../server.js');
 
 const client = new Client({
     intents: [
