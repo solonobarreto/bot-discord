@@ -1,7 +1,7 @@
 const { Client, GatewayIntentBits } = require('discord.js');
 const fs = require('fs');
 const path = require('path');
-require('dotenv').config();  // Adicionado para carregar o .env localmente
+require('dotenv').config();  // Carrega o .env localmente
 
 const client = new Client({
     intents: [
@@ -13,12 +13,10 @@ const client = new Client({
     ],
 });
 
-const dataFile = path.join(__dirname, '../data/', 'nerwinMessageData.json');  // Caminho corrigido para data/
+const dataFile = path.join(__dirname, '../data/', 'nerwinMessageData.json');
 
-// Mapa de emojis para IDs de cargos (chaves: IDs de emojis, valores: IDs de cargos)
-// Este é o roleMap das reações – mapeia cada emoji a um cargo
+// Mapa de emojis para IDs de cargos
 const roleMap = {
-    // emoji_id : cargo_id
     '1424611100842004490': '1469894337490845718',  // moonlord
     '1424611093959020564': '1469894442952560640',  // gladiator
     '1424609685360738314': '1469894471356252171',  // barbarian
@@ -54,44 +52,44 @@ const roleMap = {
     '1424612387931291689': '1469895522906144942',  // defensio
 };
 
-// Mapa auxiliar para nomes de emojis (chaves: IDs de emojis, valores: nomes)
+// Mapa auxiliar para nomes de emojis
 const emojiNames = {
-    '1424611100842004490': 'Moonlord',  // moonlord
-    '1424611093959020564': 'Gladiator',  // gladiator
-    '1424609685360738314': 'Barbarian',  // barbarian
-    '1424611079950172264': 'Destroyer',  // destroyer
-    '1424610973993537536': 'DarkAvenger',  // darkavenger
-    '1424611128054513684': 'Sentinel',  // sentinel
-    '1424611130483015830': 'Sniper',  // sniper
-    '1424612183739863071': 'Tempest',  // tempest
-    '1424611137076596756': 'WindWalker',  // windwalker
-    '1424611092549865573': 'Glaciana',  // glaciana
-    '1442563843128688650': 'Saleana',  // saleana
-    '1424611096463015946': 'Ilumia',  // ilumia
-    '1424611102918049832': 'Obscuria',  // obscuria
-    '1424611095200530494': 'Guardian',  // guardian
-    '1424609650065674291': 'Crusader',  // crusader
-    '1424611097641619468': 'Inquisitor',  // inquisitor
-    '1424611122828415057': 'Saint',  // saint
-    '1424609767032361010': 'Adept',  // adept
-    '1424611106936193065': 'Physician',  // physician
-    '1424611120487993384': 'ShootingStar',  // shootingstar
-    '1424611091299696783': 'GearMaster',  // gearmaster
-    '1424611117770215524': 'SoulEater',  // souleater
-    '1424611077764943973': 'DarkSummoner',  // darksummoner
-    '1424612618835857418': 'SpiritDancer',  // spiritdancer
-    '1424609718399271034': 'BladeDancer',  // bladedancer
-    '1424611099256553513': 'LightFury',  // lightfury
-    '1424609580335501352': 'AbyssWalker',  // abysswalker
-    '1424611109184213072': 'Raven',  // raven
-    '1424612022783447110': 'Ripper',  // ripper
-    '1424611134744301588': 'Valkyrie',  // valkyria
-    '1424611082877669397': 'Flurry',  // flurry
-    '1424611113022132285': 'Ruina',  // ruina
-    '1424612387931291689': 'Defensio',  // defensio
+    '1424611100842004490': 'Moonlord',
+    '1424611093959020564': 'Gladiator',
+    '1424609685360738314': 'Barbarian',
+    '1424611079950172264': 'Destroyer',
+    '1424610973993537536': 'DarkAvenger',
+    '1424611128054513684': 'Sentinel',
+    '1424611130483015830': 'Sniper',
+    '1424612183739863071': 'Tempest',
+    '1424611137076596756': 'WindWalker',
+    '1424611092549865573': 'Glaciana',
+    '1442563843128688650': 'Saleana',
+    '1424611096463015946': 'Ilumia',
+    '1424611102918049832': 'Obscuria',
+    '1424611095200530494': 'Guardian',
+    '1424609650065674291': 'Crusader',
+    '1424611097641619468': 'Inquisitor',
+    '1424611122828415057': 'Saint',
+    '1424609767032361010': 'Adept',
+    '1424611106936193065': 'Physician',
+    '1424611120487993384': 'ShootingStar',
+    '1424611091299696783': 'GearMaster',
+    '1424611117770215524': 'SoulEater',
+    '1424611077764943973': 'DarkSummoner',
+    '1424612618835857418': 'SpiritDancer',
+    '1424609718399271034': 'BladeDancer',
+    '1424611099256553513': 'LightFury',
+    '1424609580335501352': 'AbyssWalker',
+    '1424611109184213072': 'Raven',
+    '1424612022783447110': 'Ripper',
+    '1424611134744301588': 'Valkyrie',
+    '1424611082877669397': 'Flurry',
+    '1424611113022132285': 'Ruina',
+    '1424612387931291689': 'Defensio',
 };
 
-// Definição dos grupos com seus emojis
+// Definição dos grupos
 const groups = {
     Warrior: ['1424611100842004490', '1424611093959020564', '1424609685360738314', '1424611079950172264', '1424610973993537536'],
     Archer: ['1424611128054513684', '1424611130483015830', '1424612183739863071', '1424611137076596756'],
@@ -104,15 +102,14 @@ const groups = {
     Machina: ['1424611113022132285', '1424612387931291689'],
 };
 
-// Carrega dados do arquivo JSON (agora uma array de objetos; migra formato antigo)
+// Funções de load/save
 function loadData() {
     if (fs.existsSync(dataFile)) {
         const data = fs.readFileSync(dataFile, 'utf8');
         const parsed = JSON.parse(data);
         if (Array.isArray(parsed)) {
-            return parsed;  // Formato novo
+            return parsed;
         } else {
-            // Formato antigo (objeto): migra para array vazia
             console.log('[Nerwin] Formato antigo detectado. Migrando para array vazia.');
             return [];
         }
@@ -120,20 +117,18 @@ function loadData() {
     return [];
 }
 
-// Salva dados no arquivo JSON
 function saveData(data) {
     fs.writeFileSync(dataFile, JSON.stringify(data, null, 2));
 }
 
-// Cria as mensagens de reações (uma por grupo)
+// Cria mensagens
 async function createReactionMessages(channel) {
     const messagesData = [];
     for (const [groupName, emojis] of Object.entries(groups)) {
         const embed = {
             title: `My name is Nerwin.`,
             color: 0xf1c40f,
-            description: `
-            Choose the category-**${groupName}**\nclass you are playing.`,  // Removido "class" da descrição
+            description: `Choose the category-**${groupName}**\nclass you are playing.`,
             fields: [
                 {
                     name: '',
@@ -152,7 +147,7 @@ async function createReactionMessages(channel) {
     console.log('[Nerwin] Todas as mensagens salvas.');
 }
 
-// Deleta todas as mensagens de reações
+// Deleta mensagens
 async function deleteReactionMessages() {
     const messagesData = loadData();
     if (messagesData.length === 0) {
@@ -178,20 +173,20 @@ async function deleteReactionMessages() {
     reactionMessageIds = [];
 }
 
-// Obtém a lista de messageIds válidos
+// Obtém IDs
 function getReactionMessageIds() {
     const data = loadData();
     return data.map(item => item.messageId);
 }
 
-let reactionMessageIds = getReactionMessageIds();  // Carrega do arquivo JSON
+let reactionMessageIds = getReactionMessageIds();
 console.log(`[Nerwin] ReactionMessageIds carregados: ${reactionMessageIds.join(', ')}`);
 
 client.once('ready', () => {
     console.log(`Bot Nerwin ${client.user.tag} está online!`);
 });
 
-// Comando para postar as mensagens de reações
+// Comandos
 client.on('messageCreate', async (message) => {
     if (message.author.bot) return;
 
@@ -199,7 +194,6 @@ client.on('messageCreate', async (message) => {
         if (!message.member.permissions.has('ManageRoles')) {
             return message.reply('Você não tem permissão para configurar cargos.');
         }
-
         try {
             await createReactionMessages(message.channel);
             message.reply('Mensagens de reações configuradas!');
@@ -212,7 +206,6 @@ client.on('messageCreate', async (message) => {
         if (!message.member.permissions.has('ManageRoles')) {
             return message.reply('Você não tem permissão para resetar cargos.');
         }
-
         try {
             await deleteReactionMessages();
             message.reply('Mensagens de reações deletadas! Use !classroles para criar novas.');
@@ -222,7 +215,7 @@ client.on('messageCreate', async (message) => {
     }
 });
 
-// Atribuir cargo ao reagir (com logs detalhados)
+// Atribuir cargo
 client.on('messageReactionAdd', async (reaction, user) => {
     console.log(`[Nerwin] Evento messageReactionAdd disparado para usuário: ${user.tag}`);
     console.log(`[Nerwin] Emoji reagido: ${reaction.emoji.name || reaction.emoji.id}`);
@@ -274,7 +267,7 @@ client.on('messageReactionAdd', async (reaction, user) => {
     }
 });
 
-// Remover cargo ao remover reação
+// Remover cargo
 client.on('messageReactionRemove', async (reaction, user) => {
     console.log(`[Nerwin] Evento messageReactionRemove disparado para usuário: ${user.tag}`);
     console.log(`[Nerwin] Emoji removido: ${reaction.emoji.name || reaction.emoji.id}`);
